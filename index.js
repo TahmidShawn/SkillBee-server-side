@@ -64,7 +64,12 @@ async function run() {
 
         // My Bids category data 
         app.get('/myBids', async (req, res) => {
-            const cursor = myBidsCollection.find();
+            console.log(req.query.email);
+            let query = {};
+            if (req.query?.email) {
+                query = { email: req.query?.email }
+            }
+            const cursor = myBidsCollection.find(query);
             const result = await cursor.toArray()
             res.send(result)
         })
