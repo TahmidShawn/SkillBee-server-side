@@ -29,6 +29,7 @@ async function run() {
     try {
 
         const jobCollection = client.db("jobDB").collection("job")
+        const myBidsCollection = client.db("jobDB").collection("myBids")
 
         // all job category data 
         app.get('/jobs', async (req, res) => {
@@ -51,6 +52,21 @@ async function run() {
             console.log(newJob);
             const result = await jobCollection.insertOne(newJob);
             res.send(result);
+        })
+
+        // insert add myBids data to api ('/myBids')
+        app.post('/myBids', async (req, res) => {
+            const myBids = req.body;
+            console.log(myBids);
+            const result = await myBidsCollection.insertOne(myBids);
+            res.send(result);
+        })
+
+        // My Bids category data 
+        app.get('/myBids', async (req, res) => {
+            const cursor = myBidsCollection.find();
+            const result = await cursor.toArray()
+            res.send(result)
         })
 
         // Connect the client to the server	(optional starting in v4.7)
