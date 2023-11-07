@@ -53,7 +53,14 @@ async function run() {
             const result = await jobCollection.insertOne(newJob);
             res.send(result);
         })
+        // delete jobs from my posted job 
+        app.delete('/jobs/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) };
+            const result = await jobCollection.deleteOne(query);
+            res.send(result)
 
+        })
         // insert add myBids data to api ('/myBids')
         app.post('/myBids', async (req, res) => {
             const myBids = req.body;
@@ -73,6 +80,53 @@ async function run() {
             const result = await cursor.toArray()
             res.send(result)
         })
+
+        app.get('/myBids/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await myBidsCollection.findOne(query);
+            res.send(result)
+        })
+
+        app.patch('/myBids/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updatedBooking = req.body;
+            console.log(updatedBooking);
+            const updateDoc = {
+                $set: {
+                    status: updatedBooking.status,
+                    showStatus: updatedBooking.showStatus
+                },
+            };
+            const result = await myBidsCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
+
+
+        app.put('/jobs/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const job = req.body;
+
+            const updateJob = {
+                $set: {
+                    title: job.title,
+                    maxPrice: job.maxPrice,
+                    buyerEmail: job.buyerEmail,
+                    description: job.description,
+                    deadline: job.deadline,
+                    category: job.category,
+                    minPrice: job.minPrice,
+                }
+            }
+
+            const result = await jobCollection.updateOne(filter, updateJob, options);
+            res.send(result);
+        })
+
+
 
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
