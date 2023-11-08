@@ -91,12 +91,12 @@ async function run() {
         app.patch('/myBids/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
-            const updatedBooking = req.body;
-            console.log(updatedBooking);
+            const updatedMyBids = req.body;
+            console.log(updatedMyBids);
             const updateDoc = {
                 $set: {
-                    status: updatedBooking.status,
-                    showStatus: updatedBooking.showStatus
+                    status: updatedMyBids.status,
+                    showStatus: updatedMyBids.showStatus
                 },
             };
             const result = await myBidsCollection.updateOne(filter, updateDoc);
