@@ -73,7 +73,12 @@ async function run() {
             if (req.query?.email) {
                 query = { email: req.query?.email }
             }
-            const cursor = myBidsCollection.find(query);
+            const options = {
+                sort: {
+                    status: req.query.sort === 'asc' ? 1 : -1
+                }
+            }
+            const cursor = myBidsCollection.find(query,options);
             const result = await cursor.toArray()
             res.send(result)
         })
